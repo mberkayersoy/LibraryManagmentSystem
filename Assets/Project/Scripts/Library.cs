@@ -6,21 +6,22 @@ using UnityEngine;
 [System.Serializable]
 public class Library : IFeedBack
 {
-
     private Dictionary<string, Book> _bookList = new Dictionary<string, Book>();
     public Dictionary<string, Book> BookList { get => _bookList; private set => _bookList = value; }
+
     private FeedBack _feedBack = new FeedBack();
     public FeedBack FeedBack { get => _feedBack; set => _feedBack = value; }
 
-    public void AddBook(string isbn, string title, string author, int addedCoppy = 0)
+    public void AddBook(Book book, int addedCopy = 1)
     {
-        if (_bookList.ContainsKey(isbn))
+        if (_bookList.ContainsKey(book.Isbn))
         {
-            _bookList[isbn].TotalCopies++;
+            _bookList[book.Isbn].AddCopy(addedCopy);
         }
         else
         {
-            _bookList.Add(isbn, new Book(isbn, title, author));
+            _bookList.Add(book.Isbn, book);
+            book.AddCopy(addedCopy);
         }
     }
 
@@ -55,14 +56,20 @@ public class Library : IFeedBack
         }
     }
 
-    private void IncreaseExistBookCopy(Book existBook)
+    public void IncreaseExistBookCopy(Book existBook)
     {
         _bookList[existBook.Isbn].TotalCopies += existBook.TotalCopies;
     }
 
-    public Dictionary<string, Book> GetAllBooks()
+    public List<Book> GetAllBooks()
     {
-        return _bookList;
+        List<Book> allBooks = new List<Book>();
+        foreach (var item in _bookList)
+        {
+            allBooks.Add(item.Value);
+        }
+
+        return allBooks;
     }
 
     public List<Book> SearchBook(string bookData)
@@ -83,34 +90,28 @@ public class Library : IFeedBack
     }
 
 
-    private void BorrowBook(string isbn)
+    public void BorrowBook(string isbn)
     {
         if (_bookList.ContainsKey(isbn))
         {
             if (_bookList[isbn].TotalCopies > 0)
             {
                 _bookList[isbn].TotalCopies--;
+                _bookList[isbn].BorrowedCopies++;
             }
-        }
-        else
-        {
-            
         }
     }
 
-    private void ReturnBook(string isbn)
+    public void ReturnBook(string isbn)
     {
         if (_bookList.ContainsKey(isbn))
         {
             _bookList[isbn].TotalCopies++;
-        }
-        else
-        {
-            
+            _bookList[isbn].BorrowedCopies--;
         }
     }
 
-    private void GetOverdueBooks()
+    public void GetOverdueBooks()
     {
 
     }

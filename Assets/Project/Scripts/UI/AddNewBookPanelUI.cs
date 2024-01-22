@@ -3,16 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class BookInputField
+public class AddNewBookPanelUI : MonoBehaviour, IFeedBack
 {
-    public TMP_InputField InputField;
-    public string PropertyName;
-}
-
-public class AddBookPanelUI : MonoBehaviour, IFeedBack
-{
-    [SerializeField] private BookInputField[] _bookInputFields;
+    [SerializeField] private InputFieldData[] _bookInputFields;
     [SerializeField] private Button _tryAddButton;
 
     [Header("Broadcast Events")]
@@ -38,10 +31,16 @@ public class AddBookPanelUI : MonoBehaviour, IFeedBack
     {
         if (CheckInputs())
         {
-            string isbn = GetInputFieldValue("ISBN");
-            string title = GetInputFieldValue("Title");
-            string author = GetInputFieldValue("Author");
-            int totalCopies = int.Parse(GetInputFieldValue("AddedCopy"));
+            string isbn = UIManager.GetInputFieldValue(_inputFieldsDic, "ISBN");
+            string title = UIManager.GetInputFieldValue(_inputFieldsDic, "Title");
+            string author = UIManager.GetInputFieldValue(_inputFieldsDic, "Author");
+            int totalCopies = int.Parse(UIManager.GetInputFieldValue(_inputFieldsDic, "AddedCopy"));
+
+            if (totalCopies <= 0)
+            {
+                SetFeedBack("number of copies");
+                return;
+            }
 
             Book newBook = new Book(isbn, title, author, totalCopies);
             _tryAddBook.RaiseEvent(newBook);
@@ -63,16 +62,24 @@ public class AddBookPanelUI : MonoBehaviour, IFeedBack
     }
     private void SetFeedBack(string content)
     {
-        FeedBack.Content = "The " + content + " field can't be left blank.";
+        FeedBack.Content = "The " + content + " field is not valid.";
         _feedbackChannel.RaiseEvent(_feedback);
     }
 
-    private string GetInputFieldValue(string propertyName)
+    private void ClearInputs()
     {
-        if (_inputFieldsDic.TryGetValue(propertyName, out TMP_InputField inputField))
+        foreach (var item in _inputFieldsDic)
         {
-            return inputField.text;
+            item.Value.text = "";
         }
-        return null;
+    }
+    private void OnDisable()
+    {
+        ClearInputs();
+    }
+
+    private void OnDestroy()
+    {
+        _tryAddButton.onClick.RemoveListener(TryAddBook);
     }
 }
