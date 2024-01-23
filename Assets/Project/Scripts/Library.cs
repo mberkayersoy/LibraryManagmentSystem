@@ -1,13 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-[System.Serializable]
 public class Library : IFeedBack
 {
     private Dictionary<string, Book> _bookList = new Dictionary<string, Book>();
-    public Dictionary<string, Book> BookList { get => _bookList; private set => _bookList = value; }
+    public Dictionary<string, Book> BookList { get => _bookList; set => _bookList = value; }
 
     private FeedBack _feedBack = new FeedBack();
     public FeedBack FeedBack { get => _feedBack; set => _feedBack = value; }
@@ -89,7 +86,6 @@ public class Library : IFeedBack
         return books;
     }
 
-
     public void BorrowBook(string isbn)
     {
         if (_bookList.ContainsKey(isbn))
@@ -109,10 +105,5 @@ public class Library : IFeedBack
             _bookList[isbn].TotalCopies++;
             _bookList[isbn].BorrowedCopies--;
         }
-    }
-
-    public void GetOverdueBooks()
-    {
-
     }
 }

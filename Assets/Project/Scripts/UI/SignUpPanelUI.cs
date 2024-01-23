@@ -80,5 +80,6 @@ public class SignUpPanelUI : MonoBehaviour, IFeedBack
     {
         _signUpButton.onClick.RemoveListener(() => TryAddUser());
         _userSuccessfullyAdded.OnEventRaised -= ClearInputs;
+        _backToLoginButton.onClick.RemoveListener(() => _backToSignInPanel.RaiseEvent());
     }
 }

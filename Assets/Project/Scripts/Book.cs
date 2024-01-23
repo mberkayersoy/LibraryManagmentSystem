@@ -17,13 +17,6 @@ public class Book
     {
         TotalCopies += add;
     }
-    public Book(string isbn, string title, string author)
-    {
-        _isbn = isbn;
-        _title = title;
-        _author = author;
-        _borrowedCopies = 0;
-    }
     public Book(string isbn, string title, string author, int addedCopy)
     {
         _isbn = isbn;
@@ -33,24 +26,40 @@ public class Book
         _borrowedCopies = 0;
     }
 }
-[Serializable]
 public class BorrowedBook
 {
-    private User _borrower;
+    private string _borrowerName;
+    private string _borrowerPhoneNumber;
     private Book _book;
     private DateTime _borrowDate;
     private DateTime _returnDueDate;
 
-    public BorrowedBook(User borrower, Book book, int returnDueTime = 2)
+    public BorrowedBook(string borrowerName, string borrowerPhoneNumber, Book book, int returnDueTime = 2)
     {
-        _borrower = borrower;
+        _borrowerName = borrowerName;
+        _borrowerPhoneNumber = borrowerPhoneNumber;
         _book = book;
         _borrowDate = DateTime.Now;
         _returnDueDate = _borrowDate.AddMinutes(returnDueTime);
     }
 
+    public bool IsOverdued()
+    {
+        DateTime currentDate = DateTime.Now;
+
+        if (currentDate > _returnDueDate)
+        {
+            return true; 
+        }
+        else
+        {
+            return false; 
+        }
+    }
+
     public DateTime BorrowDate { get => _borrowDate; }
     public DateTime ReturnDueDate { get => _returnDueDate; }
-    public User Borrower { get => _borrower; private set => _borrower = value; }
     public Book Book { get => _book; private set => _book = value; }
+    public string BorrowerName { get => _borrowerName; set => _borrowerName = value; }
+    public string BorrowerPhoneNumber { get => _borrowerPhoneNumber; set => _borrowerPhoneNumber = value; }
 }

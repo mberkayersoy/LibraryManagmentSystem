@@ -88,6 +88,7 @@ public class LoginPanelUI : MonoBehaviour, IFeedBack
     {
         _loginButton.onClick.RemoveListener(() => CheckInputs());
         _guestButton.onClick.RemoveListener(() => _userSignInChannel.RaiseEvent(null));
+        _showSignUpPanelButton.onClick.RemoveListener(() => _showSignUpPanel.RaiseEvent());
     }
 
 }

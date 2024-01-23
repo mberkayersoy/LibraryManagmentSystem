@@ -68,6 +68,7 @@ public class AddExistBookUI : MonoBehaviour, IFeedBack
 
     private void OnDestroy()
     {
-        _closeButton.onClick.RemoveListener(() => gameObject.SetActive(false));
+        _closeButton.onClick.RemoveListener(() => gameObject.SetActive(false)); 
+        _addButton.onClick.RemoveListener(AddBook);
     }
 }

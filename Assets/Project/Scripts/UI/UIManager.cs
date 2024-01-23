@@ -23,16 +23,21 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button _showSearchBooksPanelButton;
     [SerializeField] private Button _showReturnBookPanelButton;
     [SerializeField] private Button _showOverdueBooksPanelButton;
+    [SerializeField] private Button _showAllBorrowedBooksPanelButton;
+    [SerializeField] private Button _overdueBooksPanelButton;
+    [SerializeField] private Button _logOutButton;
     [Header("UI PANELS")]
     [SerializeField] private Transform _libraryPanel;
     [SerializeField] private Transform _searchPanel;
     [SerializeField] private Transform _addBookPanel;
     [SerializeField] private Transform _signInPanel;
     [SerializeField] private Transform _signUpPanel;
+    [SerializeField] private Transform _returnPanel;
+    [SerializeField] private Transform _allBorrowedBooksPanel;
+    [SerializeField] private Transform _overdueBooksPanel;
     [Header("POPUPS")]
     [SerializeField] private AddExistBookUI _addExistBookPopUp;
     [SerializeField] private BorrowBookUI _borrowBookPopUp;
-
     [Header("Listening Events")]
     [SerializeField] private FeedBackEventChannelSO _feedBackTextChannel;
     [SerializeField] private UserEventChannelSO _userSignInChannel;
@@ -42,7 +47,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private AddExistBookDataEventChannelSO _addExistBookChannel;
     [SerializeField] private BookEventChannelSO _showBorrowBookPopUpChannel;
     [SerializeField] private BookEventChannelSO _bookBorrowedEventChannel;
-
     [Header("BroadCast Events")]
     [SerializeField] private BookListEventChannelSO _getAllBooksChannel;
     [SerializeField] private VoidEventChannelSO _userSuccessfullyAdded;
@@ -64,7 +68,9 @@ public class UIManager : MonoBehaviour
         _showSearchBooksPanelButton.onClick.AddListener(() => SetActivePanel(_searchPanel.name));
         _showAddButtonPanelButton.onClick.AddListener(() => SetActivePanel(_addBookPanel.name));
         _showReturnBookPanelButton.onClick.AddListener(TryShowReturnBookPanel);
-        //_showOverduePanel.onClick.AddListener(() => SetActivePanel(_searchPanel.name));
+        _showAllBorrowedBooksPanelButton.onClick.AddListener(() => SetActivePanel(_allBorrowedBooksPanel.name));
+        _overdueBooksPanelButton.onClick.AddListener(() => SetActivePanel(_overdueBooksPanel.name));
+        _logOutButton.onClick.AddListener(() => SetActivePanel(_signInPanel.name));
 
         SetActivePanel(_signInPanel.name);
     }
@@ -73,7 +79,7 @@ public class UIManager : MonoBehaviour
     {
         if (_currentUser != null)
         {
-
+            SetActivePanel(_returnPanel.name);
         }
         else
         {
@@ -119,7 +125,7 @@ public class UIManager : MonoBehaviour
 
     private void ShowLibraryPanel(User user)
     {
-        SetActivePanel();
+        SetActivePanel(_libraryPanel.name);
         if (user == null)
         {
             _currentUser = null;
@@ -155,18 +161,30 @@ public class UIManager : MonoBehaviour
         _feedBackText.text = "";
         _feedBackCoroutine = null;
     }
-    private void SetActivePanel(string activatePanel = null)
+    private void SetActivePanel(string activatePanel)
     {
-        if (activatePanel == null)
+        if (activatePanel == _signInPanel.name || activatePanel == _signUpPanel.name)
         {
-            _libraryPanel.gameObject.SetActive(true);
-            _signInPanel.gameObject.SetActive(false);
-            return;
+            _signInPanel.gameObject.SetActive(activatePanel.Equals(_signInPanel.name));
+            _signUpPanel.gameObject.SetActive(activatePanel.Equals(_signUpPanel.name));
+            _libraryPanel.gameObject.SetActive(false);
+            _searchPanel.gameObject.SetActive(false);
+            _addBookPanel.gameObject.SetActive(false);
+            _returnPanel.gameObject.SetActive(false);
+            _allBorrowedBooksPanel.gameObject.SetActive(false);
+            _overdueBooksPanel.gameObject.SetActive(false);
         }
-        _searchPanel.gameObject.SetActive(activatePanel.Equals(_searchPanel.name));
-        _addBookPanel.gameObject.SetActive(activatePanel.Equals(_addBookPanel.name));
-        _signInPanel.gameObject.SetActive(activatePanel.Equals(_signInPanel.name));
-        _signUpPanel.gameObject.SetActive(activatePanel.Equals(_signUpPanel.name));
+        else
+        {
+            _signInPanel.gameObject.SetActive(false);
+            _signUpPanel.gameObject.SetActive(false);
+            _libraryPanel.gameObject.SetActive(true);
+            _searchPanel.gameObject.SetActive(activatePanel.Equals(_searchPanel.name));
+            _addBookPanel.gameObject.SetActive(activatePanel.Equals(_addBookPanel.name));
+            _returnPanel.gameObject.SetActive(activatePanel.Equals(_returnPanel.name));
+            _allBorrowedBooksPanel.gameObject.SetActive(activatePanel.Equals(_allBorrowedBooksPanel.name));
+            _overdueBooksPanel.gameObject.SetActive(activatePanel.Equals(_overdueBooksPanel.name));
+        }
     }
 
     public static string GetInputFieldValue(Dictionary<string, TMP_InputField> inputFieldsDic, string propertyName)
@@ -181,10 +199,19 @@ public class UIManager : MonoBehaviour
     private void OnDestroy()
     {
         _userSuccessfullyAdded.OnEventRaised -= ShowLogInScreen;
+        _feedBackTextChannel.OnEventRaised -= DisplayFeedBack;
+        _userSignInChannel.OnEventRaised -= ShowLibraryPanel;
+        _showSignUpPanelChannel.OnEventRaised -= ShowSignUpPanel;
+        _showAddBookPopUpChannel.OnEventRaised -= ShowAddBookPopUp;
+        _showBorrowBookPopUpChannel.OnEventRaised -= TryShowBorrowBookPopUp;
+        _addExistBookChannel.OnEventRaised -= HideAddBookPopUp;
+        _bookBorrowedEventChannel.OnEventRaised -= HideBorrowBookPopUp;
+        _backToSignInPanelChannel.OnEventRaised -= () => SetActivePanel(_signInPanel.name);
         _showSearchBooksPanelButton.onClick.RemoveListener(() => SetActivePanel(_searchPanel.name));
         _showAddButtonPanelButton.onClick.RemoveListener(() => SetActivePanel(_addBookPanel.name));
-        //_showReturnPanel.onClick.RemoveListener(() => SetActivePanel(_searchPanel.name));
-        //_showOverduePanel.onClick.RemoveListener(() => SetActivePanel(_searchPanel.name));
-        _feedBackTextChannel.OnEventRaised -= DisplayFeedBack;
+        _showReturnBookPanelButton.onClick.RemoveListener(TryShowReturnBookPanel);
+        _showAllBorrowedBooksPanelButton.onClick.RemoveListener(() => SetActivePanel(_allBorrowedBooksPanel.name));
+        _overdueBooksPanelButton.onClick.RemoveListener(() => SetActivePanel(_overdueBooksPanel.name));
+        _logOutButton.onClick.RemoveListener(() => SetActivePanel(_signInPanel.name));
     }
 }

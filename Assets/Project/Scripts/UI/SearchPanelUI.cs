@@ -64,7 +64,7 @@ public class SearchPanelUI : MonoBehaviour
     {
         foreach (Transform child in _viewContent.transform)
         {
-            if (child == _viewContent.transform || child == _rowTemplate.transform) continue;
+            if (child == _viewContent.transform) continue;
 
             Destroy(child.gameObject);
         }

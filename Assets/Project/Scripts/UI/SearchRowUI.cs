@@ -50,4 +50,11 @@ public class SearchRowUI : MonoBehaviour, IFeedBack
         _borrowedCopiesText.text = book.BorrowedCopies.ToString();
         _rowBook = book;
     }
+
+    private void OnDestroy()
+    {
+        _addButton.onClick.RemoveListener(() => _showAddBookPopUpChannel.RaiseEvent(_rowBook));
+        _borrowButton.onClick.RemoveListener(TryBorrow);
+    }
 }
+

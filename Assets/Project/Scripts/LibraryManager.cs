@@ -1,36 +1,36 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class LibraryManager: MonoBehaviour, IFeedBack
+public class LibraryManager: MonoBehaviour
 {
     [Header("Listening Events")]
     [SerializeField] private BookEventChannelSO _newBookAdded;
     [SerializeField] private AddExistBookDataEventChannelSO _existBookAdded;
     [SerializeField] private BookEventChannelSO _bookBorrowed;
+    [SerializeField] private BookEventChannelSO _bookReturned;
     [Header("Broadcast Events")]
     [SerializeField] private FeedBackEventChannelSO _feedBackChannel;
 
-    private static Library _library;
+    private static Library _library = new Library();
     private FeedBack _feedBack = new FeedBack();
     public Library Library { get => _library; private set => _library = value; }
     public FeedBack FeedBack { get => _feedBack; private set => _feedBack = value; }
 
     private void Awake()
     {
+        _library.BookList = SaveLoadManager<Book>.Load(gameObject.name);
         _newBookAdded.OnEventRaised += HandleNewBookAdded;
         _existBookAdded.OnEventRaised += HandleExistingBookAdded;
         _bookBorrowed.OnEventRaised += HandleBorrowedBook;
-        _library = new Library();
+        _bookReturned.OnEventRaised += HandleReturnedBook;
 
-        _library.AddBook(new Book("0", "1", "Author0"), 10);
-        _library.AddBook(new Book("1", "2", "Author1"), 10);
-        _library.AddBook(new Book("2", "3", "Author2"), 10);
-        _library.AddBook(new Book("3", "4", "Author3"), 10);
-        _library.AddBook(new Book("4", "5", "Author4"), 10);
+    }
 
+    private void HandleReturnedBook(Book book)
+    {
+        _library.ReturnBook(book.Isbn);
+        _feedBack.Content = "The book returned";
+        _feedBackChannel.RaiseEvent(_feedBack);
     }
 
     private void HandleBorrowedBook(Book book)
@@ -63,7 +63,10 @@ public class LibraryManager: MonoBehaviour, IFeedBack
 
     private void OnDestroy()
     {
+         SaveLoadManager<Book>.Save(_library.BookList, gameObject.name);
         _newBookAdded.OnEventRaised -= HandleNewBookAdded;
         _existBookAdded.OnEventRaised -= HandleExistingBookAdded;
+        _bookBorrowed.OnEventRaised -= HandleBorrowedBook;
+        _bookReturned.OnEventRaised -= HandleReturnedBook;
     }
 }
