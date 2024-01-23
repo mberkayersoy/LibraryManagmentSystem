@@ -12,11 +12,9 @@ This project is a simple library management system with the following features:
 
 ### User Permissions
 
-- **Member Login:** Users can log in as members.
+- **Member Login:** Users can log in as members. So, They can access all features in the library.
 - **Guest Login:** Guest users have limited access to certain functions.
-  - They can add books to the library.
-  - Although they can perform other operations, they cannot borrow books.
-  - As they cannot borrow books, they cannot return books.
+  - They cannot borrow books. As they cannot borrow books, they cannot return books.
 
 **Note:** Guest users can perform all other operations that registered users can.
 
