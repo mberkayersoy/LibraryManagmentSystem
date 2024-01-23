@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 
@@ -26,6 +27,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button _showAllBorrowedBooksPanelButton;
     [SerializeField] private Button _overdueBooksPanelButton;
     [SerializeField] private Button _logOutButton;
+    [SerializeField] private Button _quitButton;
     [Header("UI PANELS")]
     [SerializeField] private Transform _libraryPanel;
     [SerializeField] private Transform _searchPanel;
@@ -71,8 +73,23 @@ public class UIManager : MonoBehaviour
         _showAllBorrowedBooksPanelButton.onClick.AddListener(() => SetActivePanel(_allBorrowedBooksPanel.name));
         _overdueBooksPanelButton.onClick.AddListener(() => SetActivePanel(_overdueBooksPanel.name));
         _logOutButton.onClick.AddListener(() => SetActivePanel(_signInPanel.name));
+        _quitButton.onClick.AddListener(QuitButtonClicked);
 
         SetActivePanel(_signInPanel.name);
+    }
+
+    public void QuitButtonClicked()
+    {
+        #if UNITY_EDITOR
+        if (Application.isPlaying)
+        {
+            UnityEditor.EditorApplication.isPlaying = false;
+        }
+        #endif
+
+        #if !UNITY_EDITOR
+        Application.Quit();
+        #endif
     }
 
     private void TryShowReturnBookPanel()
@@ -213,5 +230,6 @@ public class UIManager : MonoBehaviour
         _showAllBorrowedBooksPanelButton.onClick.RemoveListener(() => SetActivePanel(_allBorrowedBooksPanel.name));
         _overdueBooksPanelButton.onClick.RemoveListener(() => SetActivePanel(_overdueBooksPanel.name));
         _logOutButton.onClick.RemoveListener(() => SetActivePanel(_signInPanel.name));
+        _quitButton.onClick.RemoveListener(QuitButtonClicked);
     }
 }
