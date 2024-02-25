@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81a97c74fd25eb1429b02179c817c869, type: 3}
+  m_Name: Jump
+  m_EditorClassIdentifier: 
+  Obstacle: {fileID: 6242394784301024830, guid: fcf60d274b2045d46915f83a7c9a82fc, type: 3}
+  ColliderData:
+    Min: {x: -1, y: 0, z: -0.5}
+    Max: {x: 1, y: 2, z: 0.5}
+    Center: {x: 0, y: 1, z: 0}
+    Size: {x: 2, y: 2, z: 1}
+  Space: 4
+  ChanceWeight: 0.6
