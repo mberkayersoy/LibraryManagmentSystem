@@ -4,19 +4,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
-public interface IInput
-{
-    public event Action<Vector2> InputChanged;
-}
-
-public class RunnerPlayerInput : PoolableComponent, IInput
+public class RunnerPlayerInput : PoolableComponent
 {
     public event Action<Vector2> InputChanged;
 
     [Header("Character Input Values")]
     public Vector2 move;
     public bool jump;
-    private bool _isActivated;
 
 #if ENABLE_INPUT_SYSTEM
     public void OnMove(InputValue value)
@@ -43,8 +37,4 @@ public class RunnerPlayerInput : PoolableComponent, IInput
         jump = newJumpState;
     }
     
-    public void Activate()
-    {
-        _isActivated = true;
-    }
 }
