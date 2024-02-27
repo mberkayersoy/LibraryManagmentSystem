@@ -34,5 +34,6 @@ This project is a simple endless runner game with the following features:
   - Each piece of ground that the character walks on is called chunk. Each chunk places its own obstacles randomly. While doing this placement, he always makes sure that there is a safe path for the character to pass. So it prevents the game from being unbeatable.
   - First of all, it moves through random lines on the chunk at random intervals and stores these intervals, and since these intervals will be safe intervals for the character, it does not place obstacles in these intervals. (If desired, passable obstacles can be added to these safe ranges.)
   - Then, it adds the coins that the character can collect to the pre-selected safe areas so that the coins that the character can collect do not become intertwined with obstacles.
+
 **Selection With Weight**
   - Instead of using Random.Range() when creating obstacles or different chunks, a generic SelectorWithWeight class was developed. This class scans the Array elements given to it according to their weight values ​​and makes a random selection. However, in this selection process, the higher the weight value, the more likely the object is to be selected.
