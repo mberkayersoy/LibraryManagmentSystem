@@ -25,6 +25,11 @@ This project is a simple library management system with the following features:
 
 This project is a simple endless runner game with the following features:
 
+- **Controls**
+- A-D: Side movement.
+- W: Jump.
+- S: Rolling while on the ground, and while in the air quick landing followed by roll .
+
 - **Random Obstacle Placement**
   - Each piece of ground that the character walks on is called chunk. Each chunk places its own obstacles randomly. While doing this placement, he always makes sure that there is a safe path for the character to pass. So it prevents the game from being unbeatable.
   - First of all, it moves through random lines on the chunk at random intervals and stores these intervals, and since these intervals will be safe intervals for the character, it does not place obstacles in these intervals. (If desired, passable obstacles can be added to these safe ranges.)
